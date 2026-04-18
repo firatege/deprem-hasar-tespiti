@@ -1,0 +1,8 @@
+{
+  "class_0": 0.894591,
+  "class_1": 1.133568,
+  "train_rows": 3870,
+  "train_positive": 1707,
+  "train_negative": 2163,
+  "formula": "balanced"
+}

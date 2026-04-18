@@ -1,0 +1,4 @@
+split,rows,positive,negative,positive_ratio
+train,3870,1707,2163,0.441085
+val,3822,1106,2716,0.289377
+test,3342,836,2506,0.25015

@@ -1,0 +1,37 @@
+# Virtual environments
+.venv/
+.venv*/
+venv/
+
+# Python cache/build
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE/editor
+.idea/
+.vscode/
+
+# OS/filesystem
+.DS_Store
+Thumbs.db
+
+# Logs and local runtime files
+*.log
+
+# Large/generated model artifacts
+models/**/*.pt
+models/**/*.pkl
+
+# Local storage/cache outputs
+storage/
+
+# Large/local data artifacts
+data/**/*.tgz
+data/**/*.tgz.part-*
+data/index.db
+

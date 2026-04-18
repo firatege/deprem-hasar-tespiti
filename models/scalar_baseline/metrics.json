@@ -1,0 +1,44 @@
+{
+  "train": {
+    "accuracy": 0.661498708010336,
+    "precision": 0.6161497952018724,
+    "recall": 0.616871704745167,
+    "f1": 0.6165105386416861,
+    "roc_auc": 0.714207712876814
+  },
+  "val": {
+    "accuracy": 0.6797385620915033,
+    "precision": 0.4912621359223301,
+    "recall": 0.7221693625118935,
+    "f1": 0.5847457627118644,
+    "roc_auc": 0.7606582643702492
+  },
+  "test": {
+    "accuracy": 0.5971563981042654,
+    "precision": 0.28600133958472873,
+    "recall": 0.4792368125701459,
+    "f1": 0.35822147651006714,
+    "roc_auc": 0.6094909265417235
+  },
+  "config": {
+    "train_csv": "D:\\JupyterProject\\data\\processed\\train_split.csv",
+    "val_csv": "D:\\JupyterProject\\data\\processed\\val_split.csv",
+    "test_csv": "D:\\JupyterProject\\data\\processed\\test_split.csv",
+    "pga_default": 0.0,
+    "max_bands": 3
+  },
+  "shape": {
+    "x_train": [
+      3870,
+      19
+    ],
+    "x_val": [
+      3366,
+      19
+    ],
+    "x_test": [
+      3798,
+      19
+    ]
+  }
+}
