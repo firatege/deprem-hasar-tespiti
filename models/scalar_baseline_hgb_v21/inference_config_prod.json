@@ -1,0 +1,7 @@
+{
+  "threshold": 0.35,
+  "max_bands": 3,
+  "image_only": false,
+  "normalize_pga": false,
+  "profile": "prod_balanced_v21"
+}

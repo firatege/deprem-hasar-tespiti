@@ -1,6 +1,7 @@
 # Virtual environments
 .venv/
 .venv*/
+.venv312/
 venv/
 
 # Python cache/build

@@ -77,3 +77,38 @@ Output:
 
 - `models/scalar_baseline/model_benchmark.json`
 
+## ML v2 (HGB + Threshold Tuning)
+
+Trains `hist_gradient_boosting` with a compact hyperparameter grid and selects threshold on validation F1.
+
+```powershell
+Set-Location "D:\JupyterProject"
+py scripts\train_scalar_baseline_v2.py --train-csv data\processed\train_split.csv --val-csv data\processed\val_split.csv --test-csv data\processed\test_split.csv --output-dir models\scalar_baseline_hgb_v2 --image-only
+```
+
+Recommended anti-overfit options (enabled by default):
+
+- `--preset conservative`
+- `--hard-negative-mining`
+- `--hnm-threshold 0.6 --hnm-weight 3.0 --hnm-max-fraction 0.2`
+
+Fast smoke run before full training:
+
+```powershell
+Set-Location "D:\JupyterProject"
+py scripts\train_scalar_baseline_v2.py --train-csv data\processed\subset_500\train_split.csv --val-csv data\processed\subset_500\val_split.csv --test-csv data\processed\subset_500\test_split.csv --output-dir models\scalar_baseline_hgb_v2_smoke --image-only --max-candidates 6
+```
+
+Outputs:
+
+- `models/scalar_baseline_hgb_v2/model.pkl`
+- `models/scalar_baseline_hgb_v2/metrics.json`
+- `models/scalar_baseline_hgb_v2/inference_config.json`
+
+Inference (uses tuned threshold and image-only mode from config):
+
+```powershell
+Set-Location "D:\JupyterProject"
+py scripts\run_scalar_baseline_infer.py --model-path models\scalar_baseline_hgb_v2\model.pkl --inference-config models\scalar_baseline_hgb_v2\inference_config.json --pre-image D:\path\to\pre.tif --post-image D:\path\to\post.tif
+```
+
