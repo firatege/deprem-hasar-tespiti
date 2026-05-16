@@ -66,9 +66,22 @@ def _edge_change(pre_band: np.ndarray, post_band: np.ndarray) -> float:
     return float(diff.mean() / (pre_mag + 1e-6))
 
 
+def _quadrant_means(diff: np.ndarray) -> list[float]:
+    h, w = diff.shape
+    mh, mw = h // 2, w // 2
+    return [
+        float(diff[:mh, :mw].mean()),
+        float(diff[:mh, mw:].mean()),
+        float(diff[mh:, :mw].mean()),
+        float(diff[mh:, mw:].mean()),
+    ]
+
+
 def _band_features(pre_band: np.ndarray, post_band: np.ndarray) -> list[float]:
     diff = np.abs(post_band - pre_band)
     diff_skew, diff_kurtosis = _skewness_and_kurtosis(diff)
+    flat = diff.ravel()
+    p10, p25, p75, p90 = (float(v) for v in np.percentile(flat, [10, 25, 75, 90]))
     return [
         float(np.mean(pre_band)),
         float(np.mean(post_band)),
@@ -80,6 +93,8 @@ def _band_features(pre_band: np.ndarray, post_band: np.ndarray) -> list[float]:
         diff_kurtosis,
         _ssim(pre_band, post_band),
         _edge_change(pre_band, post_band),
+        p10, p25, p75, p90,
+        *_quadrant_means(diff),
     ]
 
 
