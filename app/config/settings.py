@@ -32,11 +32,11 @@ class Settings:
     cache_dir: Path = _env_path("CACHE_DIR", storage_root / "cache")
     quarantine_dir: Path = _env_path("QUARANTINE_DIR", storage_root / "quarantine")
     model_path: Path = _env_path(
-        "MODEL_PATH", base_dir / "models" / "scalar_baseline_hgb_v21" / "model.pkl"
+        "MODEL_PATH", base_dir / "models" / "scalar_baseline_hgb_v3" / "model.pkl"
     )
     inference_config_path: Path = _env_path(
         "INFERENCE_CONFIG_PATH",
-        base_dir / "models" / "scalar_baseline_hgb_v21" / "inference_config_prod.json",
+        base_dir / "models" / "scalar_baseline_hgb_v3" / "inference_config.json",
     )
     redis_url: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     rq_queue_name: str = os.getenv("RQ_QUEUE_NAME", "tile-jobs")
