@@ -27,6 +27,9 @@ Thumbs.db
 # Large/generated model artifacts
 models/**/*.pt
 models/**/*.pkl
+# En iyi model - GitHub'a dahil
+!models/scalar_baseline_hgb_v3/model.pkl
+!models/scalar_baseline_hgb_v3/inference_config.json
 
 # Local storage/cache outputs
 storage/
