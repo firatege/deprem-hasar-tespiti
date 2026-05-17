@@ -3,13 +3,12 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 from app.config.settings import settings
 from app.db.repository import Database
 from app.queue import get_queue
 from app.services.cache import load_cached_result
-from app.services.classification import normalize_damage_label
 from app.workers.tasks import process_tile_job
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
@@ -22,13 +21,13 @@ db.init_db()
 class SubmitJobRequest(BaseModel):
     event_id: str = Field(..., min_length=1)
     tile_id: str = Field(..., min_length=1)
-    pga_value: float | None = None
-    damage_label: str = "major-damage"
-
-    @field_validator("damage_label")
-    @classmethod
-    def validate_damage_label(cls, value: str) -> str:
-        return normalize_damage_label(value)
+    pre_image_path: str = Field(..., min_length=1)
+    post_image_path: str = Field(..., min_length=1)
+    pga_value: float = 0.0
+    magnitude: float = 0.0
+    depth_km: float = 0.0
+    acquisition_delta_days: float = 0.0
+    building_density: float = 0.0
 
 
 @router.post("/submit")

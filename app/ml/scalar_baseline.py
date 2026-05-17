@@ -5,6 +5,7 @@ from typing import Any, Callable
 
 import numpy as np
 import rasterio
+from scipy.ndimage import sobel
 
 
 def _safe_float(value: str | None, default: float) -> float:
@@ -40,9 +41,47 @@ def _skewness_and_kurtosis(values: np.ndarray) -> tuple[float, float]:
     return skew, kurtosis
 
 
+def _ssim(a: np.ndarray, b: np.ndarray) -> float:
+    a = a.astype(np.float64)
+    b = b.astype(np.float64)
+    mu_a, mu_b = a.mean(), b.mean()
+    var_a = ((a - mu_a) ** 2).mean()
+    var_b = ((b - mu_b) ** 2).mean()
+    cov = ((a - mu_a) * (b - mu_b)).mean()
+    c1, c2 = 6.5025, 58.5225  # (0.01*255)^2, (0.03*255)^2
+    num = (2 * mu_a * mu_b + c1) * (2 * cov + c2)
+    den = (mu_a**2 + mu_b**2 + c1) * (var_a + var_b + c2)
+    if abs(den) < 1e-12:
+        return 1.0
+    return float(np.clip(num / den, -1.0, 1.0))
+
+
+def _edge_change(pre_band: np.ndarray, post_band: np.ndarray) -> float:
+    pre_f = pre_band.astype(np.float64)
+    post_f = post_band.astype(np.float64)
+    pre_edge = np.hypot(sobel(pre_f, axis=0), sobel(pre_f, axis=1))
+    post_edge = np.hypot(sobel(post_f, axis=0), sobel(post_f, axis=1))
+    diff = np.abs(post_edge - pre_edge)
+    pre_mag = pre_edge.mean()
+    return float(diff.mean() / (pre_mag + 1e-6))
+
+
+def _quadrant_means(diff: np.ndarray) -> list[float]:
+    h, w = diff.shape
+    mh, mw = h // 2, w // 2
+    return [
+        float(diff[:mh, :mw].mean()),
+        float(diff[:mh, mw:].mean()),
+        float(diff[mh:, :mw].mean()),
+        float(diff[mh:, mw:].mean()),
+    ]
+
+
 def _band_features(pre_band: np.ndarray, post_band: np.ndarray) -> list[float]:
     diff = np.abs(post_band - pre_band)
     diff_skew, diff_kurtosis = _skewness_and_kurtosis(diff)
+    flat = diff.ravel()
+    p10, p25, p75, p90 = (float(v) for v in np.percentile(flat, [10, 25, 75, 90]))
     return [
         float(np.mean(pre_band)),
         float(np.mean(post_band)),
@@ -52,6 +91,10 @@ def _band_features(pre_band: np.ndarray, post_band: np.ndarray) -> list[float]:
         float(np.std(diff)),
         diff_skew,
         diff_kurtosis,
+        _ssim(pre_band, post_band),
+        _edge_change(pre_band, post_band),
+        p10, p25, p75, p90,
+        *_quadrant_means(diff),
     ]
 
 
